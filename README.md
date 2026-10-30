@@ -6,17 +6,15 @@ Dashboard estático (HTML + JS + [Chart.js](https://www.chartjs.org/)), desplega
 
 ## Cómo está organizado
 
-La barra lateral tiene dos partes:
+**Datos.** Los sprints se ingresan a mano con el formulario. La primera vez, el dashboard arranca con una base de 6 sprints ([`data/carga-base.json`](data/carga-base.json)), extraída de las métricas directas de [`Dataset_Historias_Calidad_6_Sprints.xlsx`](Dataset_Historias_Calidad_6_Sprints.xlsx), y los sprints nuevos se suman a continuación. Se guardan en el `localStorage` del navegador: cada navegador tiene los suyos y no se comparten entre usuarios. Con *Restaurar datos base* se vuelve a los 6 sprints originales.
 
-- **Datos**: elige de dónde salen los sprints.
-  - **Precargados**: los datos de ejemplo de [`data/sprints.json`](data/sprints.json). Esta fuente es fija.
-  - **Carga manual**: arranca con una base de 6 sprints ([`data/carga-base.json`](data/carga-base.json), extraída de las métricas directas de `Dataset_Historias_Calidad_6_Sprints.xlsx`), y los sprints que se ingresan con el formulario se suman a continuación. Se guardan en el `localStorage` del navegador: cada navegador tiene los suyos y no se comparten entre usuarios. Con *Restaurar datos base* se vuelve a los 6 sprints originales.
-- **Secciones**: muestran una parte del dashboard por vez.
-  - **Cargar sprint** (solo en carga manual): un formulario con las métricas directas, agrupadas por dimensión. Los SPTH se completan solos con los sprints ya cargados.
-  - **Resumen**: el porcentaje de sprints con *concordancia alta* y el veredicto, la cantidad de sprints en cada relación velocidad–calidad y un gráfico de velocidad coloreado por calidad.
-  - **Sprints**: una tabla con los 4 indicadores de cada sprint, cada celda coloreada según su nivel.
-  - **Detalle del sprint**: la relación velocidad–calidad, la calidad y la velocidad de un sprint, y los indicadores agrupados por dimensión (Adecuación funcional y Mantenibilidad), cada uno con su medidor de umbrales.
-  - **Glosario y reglas**: en tres partes (variables por dimensión, indicadores con sus umbrales y reglas de decisión).
+La barra lateral muestra cuántos sprints hay cargados y tiene las secciones del dashboard (se ve una por vez):
+
+- **Cargar sprint**: un formulario con las métricas directas, agrupadas por dimensión. Los SPTH se completan solos con los sprints ya cargados.
+- **Resumen**: el porcentaje de sprints con *concordancia alta* y el veredicto, la cantidad de sprints en cada relación velocidad–calidad y un gráfico de velocidad coloreado por calidad.
+- **Sprints**: una tabla con los 4 indicadores de cada sprint, cada celda coloreada según su nivel.
+- **Detalle del sprint**: la relación velocidad–calidad, la calidad y la velocidad de un sprint, y los indicadores agrupados por dimensión (Adecuación funcional y Mantenibilidad), cada uno con su medidor de umbrales.
+- **Glosario y reglas**: en tres partes (variables por dimensión, indicadores con sus umbrales y reglas de decisión).
 
 El significado de cada variable también aparece al pasar el mouse por encima (o al tocarla en el celular).
 

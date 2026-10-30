@@ -11,11 +11,10 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js" defer></script>
   <script src="js/modelo.js" defer></script>
   <script src="js/dashboard.js" defer></script>
-  <script src="js/precargados.js" defer></script>
   <script src="js/carga.js" defer></script>
   <script src="js/app.js" defer></script>
 </head>
-<body data-modo="precargados" data-vista="resumen">
+<body data-vista="resumen">
   <div class="app">
     <aside class="sidebar">
       <div class="marca">
@@ -28,23 +27,15 @@
 
       <div class="bloque">
         <p class="sidebar-titulo">Datos</p>
-        <div class="modos" role="tablist" aria-label="Origen de los datos">
-          <button class="modo" role="tab" data-modo="precargados">
-            <svg viewBox="0 0 24 24" aria-hidden="true"><ellipse cx="12" cy="5" rx="9" ry="3" /><path d="M3 5v14a9 3 0 0 0 18 0V5" /><path d="M3 12a9 3 0 0 0 18 0" /></svg>
-            Precargados
-          </button>
-          <button class="modo" role="tab" data-modo="carga">
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" /></svg>
-            Carga manual
-          </button>
+        <div class="fuente">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><ellipse cx="12" cy="5" rx="9" ry="3" /><path d="M3 5v14a9 3 0 0 0 18 0V5" /><path d="M3 12a9 3 0 0 0 18 0" /></svg>
+          <span id="fuente-carga"></span>
         </div>
-        <p class="fuente solo-precargados" id="fuente-precargados"></p>
-        <p class="fuente solo-carga" id="fuente-carga"></p>
       </div>
 
       <nav class="bloque nav" aria-label="Secciones">
         <p class="sidebar-titulo">Secciones</p>
-        <button class="nav-item solo-carga" data-vista="cargar">
+        <button class="nav-item" data-vista="cargar">
           <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10" /><path d="M12 8v8M8 12h8" /></svg>
           Cargar sprint
         </button>
@@ -74,16 +65,11 @@
 
     <main class="contenido">
       <header class="topbar">
-        <p class="eyebrow" id="topbar-modo"></p>
         <h1 id="topbar-titulo"></h1>
         <p class="topbar-sub" id="topbar-sub"></p>
       </header>
 
-      <section id="panel-precargados" class="panel solo-precargados">
-        <div id="dashboard-precargados" class="dashboard"></div>
-      </section>
-
-      <section id="panel-carga" class="panel solo-carga">
+      <section id="panel-carga" class="panel">
         <div class="vista vista-cargar">
           <form id="form-sprint" class="card form" novalidate>
             <div class="form-cabecera">

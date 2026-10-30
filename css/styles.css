@@ -157,32 +157,7 @@ svg { flex-shrink: 0; }
   padding: 0 8px;
 }
 
-.modos {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 4px;
-  padding: 4px;
-  border-radius: 12px;
-  background: rgba(255, 255, 255, 0.1);
-}
-.modo {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 4px;
-  padding: 10px 6px;
-  border: none;
-  border-radius: 9px;
-  background: none;
-  color: rgba(255, 255, 255, 0.8);
-  font: inherit;
-  font-size: 0.8rem;
-  font-weight: 600;
-  cursor: pointer;
-}
-.modo:hover { background: rgba(255, 255, 255, 0.08); }
-.modo[aria-selected="true"] { background: #fff; color: #3d2a9a; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2); }
-.modo svg, .nav-item svg, .boton-primario svg {
+.fuente svg, .nav-item svg, .boton-primario svg {
   width: 18px;
   height: 18px;
   fill: none;
@@ -191,7 +166,16 @@ svg { flex-shrink: 0; }
   stroke-linecap: round;
   stroke-linejoin: round;
 }
-.fuente { font-size: 0.78rem; color: rgba(255, 255, 255, 0.7); padding: 0 8px; }
+.fuente {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.1);
+  font-size: 0.85rem;
+  font-weight: 600;
+}
 
 .nav { gap: 4px; }
 .nav-item {
@@ -231,9 +215,7 @@ svg { flex-shrink: 0; }
 .topbar h1 { font-size: 1.75rem; font-weight: 800; letter-spacing: -0.01em; }
 .topbar-sub { color: var(--texto-2); }
 
-/* Visibilidad según el modo y la vista elegidos en la barra lateral */
-body[data-modo="precargados"] .solo-carga,
-body[data-modo="carga"] .solo-precargados { display: none !important; }
+/* Visibilidad según la vista elegida en la barra lateral */
 body:not([data-vista="cargar"]) .vista-cargar,
 body:not([data-vista="resumen"]) .vista-resumen,
 body:not([data-vista="sprints"]) .vista-sprints,
@@ -765,13 +747,12 @@ input:focus {
 }
 
 @media (max-width: 900px) {
-  .app { grid-template-columns: minmax(0, 1fr); }
+  .app { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto 1fr; }
   .sidebar { position: static; height: auto; padding: 16px; gap: 14px; }
-  .sidebar-titulo, .sidebar-pie, .fuente { display: none; }
+  .sidebar-titulo, .sidebar-pie { display: none; }
   .nav { display: flex; overflow-x: auto; gap: 4px; padding-bottom: 2px; }
   .nav-item { width: auto; white-space: nowrap; padding: 9px 12px; }
   .nav-item[aria-current="page"]::before { display: none; }
-  .modo { flex-direction: row; justify-content: center; }
   .contenido { padding: 20px 16px 40px; }
   .topbar h1 { font-size: 1.4rem; }
   .tiles-resumen, .grupos { grid-template-columns: minmax(0, 1fr); }

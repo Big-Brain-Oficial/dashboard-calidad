@@ -1,4 +1,4 @@
-// Fuente "carga manual": sprints guardados en el localStorage del navegador.
+// Carga de sprints: se guardan en el localStorage del navegador.
 // La primera vez se inicializa con la base de data/carga-base.json (6 sprints del dataset del equipo).
 const STORAGE_KEY = 'dashboard-calidad:sprints';
 const URL_BASE = 'data/carga-base.json';
