@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Calidad del Sprint</title>
+  <link rel="stylesheet" href="css/styles.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js" defer></script>
+  <script src="js/modelo.js" defer></script>
+  <script src="js/dashboard.js" defer></script>
+  <script src="js/precargados.js" defer></script>
+  <script src="js/excel.js" defer></script>
+  <script src="js/carga.js" defer></script>
+  <script src="js/app.js" defer></script>
+</head>
+<body>
+  <header class="header">
+    <div class="header-texto">
+      <h1>Calidad del Sprint más allá de la velocidad</h1>
+      <p>Modelo de calidad · Adecuación funcional y Mantenibilidad · Grupo G – Big Brain</p>
+    </div>
+    <nav class="tabs" role="tablist">
+      <button class="tab" role="tab" data-tab="precargados">Datos precargados</button>
+      <button class="tab" role="tab" data-tab="carga">Carga manual</button>
+    </nav>
+  </header>
+
+  <main>
+    <section id="panel-precargados" class="panel" role="tabpanel" hidden>
+      <p class="contexto">Fuente: <code>data/sprints.json</code> <span id="equipo-precargados"></span></p>
+      <div id="dashboard-precargados" class="dashboard"></div>
+    </section>
+
+    <section id="panel-carga" class="panel" role="tabpanel" hidden>
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <h2>1. Base de datos desde Excel</h2>
+            <p class="ayuda">Importá el Excel con los sprints iniciales: una fila por sprint, en orden cronológico. Después podés agregar más sprints con el formulario de abajo.</p>
+          </div>
+          <div class="acciones">
+            <label class="boton">Importar Excel <input id="importar" type="file" accept=".xlsx,.xls,.csv" hidden /></label>
+            <button id="plantilla" type="button" class="secundario">Descargar plantilla</button>
+          </div>
+        </div>
+        <div id="estado-excel" class="ayuda" role="status"></div>
+      </div>
+
+      <form id="form-sprint" class="card form" novalidate>
+        <h2>2. Agregar un sprint (métricas directas)</h2>
+        <label class="campo nombre">
+          <span><b>Sprint</b> <small>Nombre o número del sprint evaluado</small></span>
+          <input name="sprint" required />
+        </label>
+        <div class="grupos"></div>
+        <ul id="errores-form" class="error" hidden></ul>
+        <div class="acciones">
+          <button type="submit">Agregar sprint</button>
+        </div>
+      </form>
+
+      <div id="cargados" class="card" hidden>
+        <div class="card-header">
+          <h2>Sprints cargados</h2>
+          <div class="acciones">
+            <button id="exportar" type="button" class="secundario">Exportar Excel</button>
+            <button id="limpiar" type="button" class="peligro">Borrar todo</button>
+          </div>
+        </div>
+        <p class="ayuda">Los datos quedan guardados solo en este navegador. Exportalos a Excel para no perderlos: el archivo exportado se puede volver a importar.</p>
+        <div class="tabla-scroll">
+          <table id="tabla-cargados" class="tabla-datos">
+            <thead><tr></tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div id="dashboard-carga" class="dashboard"></div>
+    </section>
+  </main>
+
+  <template id="tpl-dashboard">
+    <section class="card respuesta">
+      <p class="pregunta">¿La velocidad alcanza para medir la calidad del sprint?</p>
+      <div class="respuesta-cuerpo">
+        <div class="hero">
+          <span class="hero-valor"></span>
+          <span class="hero-detalle"></span>
+        </div>
+        <div class="respuesta-veredicto">
+          <div class="veredicto grande"></div>
+          <p class="veredicto-texto"></p>
+        </div>
+      </div>
+      <p class="nota">Concordancia alta = velocidad alta <b>y</b> calidad alta en el mismo sprint.
+        Adecuado: más del 75 % · En atención: entre 50 % y 75 % · No adecuado: menos del 50 %.</p>
+    </section>
+
+    <section class="card">
+      <h2>Velocidad y calidad por sprint</h2>
+      <p class="ayuda">Cada barra son los story points terminados (SPT) del sprint, coloreada según su calidad. La línea punteada es la velocidad promedio de los 5 sprints anteriores (VPH).</p>
+      <div class="leyenda"></div>
+      <div class="grafico"><canvas aria-label="Story points terminados por sprint, coloreados por calidad"></canvas></div>
+    </section>
+
+    <section class="card">
+      <h2>Resumen por sprint</h2>
+      <p class="ayuda">Tocá un sprint para ver su detalle.</p>
+      <div class="tabla-scroll">
+        <table class="tabla-sprints">
+          <thead><tr><th>Sprint</th><th>Velocidad</th><th>Calidad</th><th>Relación velocidad–calidad</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="detalle-wrap">
+      <div class="detalle-header">
+        <h2>Detalle del sprint</h2>
+        <select class="selector-sprint" aria-label="Sprint a detallar"></select>
+      </div>
+      <div class="detalle"></div>
+    </section>
+
+    <details class="card glosario">
+      <summary>Glosario de variables</summary>
+      <dl></dl>
+    </details>
+  </template>
+</body>
+</html>
