@@ -16,6 +16,22 @@ const VARIABLES = {
   VVR: 'Diferencia entre la velocidad del sprint (SPT) y el promedio histórico (VPH)',
 };
 
+// Nombres cortos para mostrar en tarjetas y formularios (el significado completo está en VARIABLES)
+const ETIQUETAS = {
+  USE: 'Comprometidas',
+  USAC: 'Terminadas y aceptadas',
+  USVF: 'Verificadas',
+  USCAF: 'Cumplen criterios',
+  DEFE: 'Defectos elegibles',
+  DEFT: 'Diagnosticados a tiempo',
+  USM: 'Modificadas',
+  USMD: 'Modificadas con degradación',
+  SPT: 'Story points terminados',
+  SPTH: 'SP de sprints anteriores',
+  VPH: 'Promedio histórico',
+  VVR: 'Variación vs. promedio',
+};
+
 const formatoNumero = (v, decimales = 1, minimo = 0) =>
   v.toLocaleString('es-AR', { minimumFractionDigits: minimo, maximumFractionDigits: decimales });
 
@@ -23,7 +39,8 @@ const INDICADORES = [
   {
     clave: 'GCF',
     nombre: 'Completitud funcional',
-    pregunta: '¿Se terminó lo que se comprometió?',
+    dimension: 'funcional',
+    pregunta: '¿Se terminó lo comprometido?',
     formula: 'GCF = USAC ÷ USE × 100',
     variables: ['USAC', 'USE'],
     calcular: (s) => (s.USE > 0 ? (s.USAC / s.USE) * 100 : null),
@@ -33,7 +50,8 @@ const INDICADORES = [
   {
     clave: 'ICF',
     nombre: 'Corrección funcional',
-    pregunta: '¿Lo verificado cumple los criterios de aceptación?',
+    dimension: 'funcional',
+    pregunta: '¿Cumple los criterios de aceptación?',
     formula: 'ICF = USCAF ÷ USVF',
     variables: ['USCAF', 'USVF'],
     calcular: (s) => (s.USVF > 0 ? s.USCAF / s.USVF : null),
@@ -43,7 +61,8 @@ const INDICADORES = [
   {
     clave: 'EDD',
     nombre: 'Analizabilidad',
-    pregunta: '¿Se encontró a tiempo la causa de los defectos?',
+    dimension: 'mantenibilidad',
+    pregunta: '¿Se diagnosticaron a tiempo los defectos?',
     formula: 'EDD = DEFT ÷ DEFE',
     variables: ['DEFT', 'DEFE'],
     calcular: (s) => (s.DEFE > 0 ? s.DEFT / s.DEFE : null),
@@ -53,7 +72,8 @@ const INDICADORES = [
   {
     clave: 'IMSD',
     nombre: 'Modificabilidad',
-    pregunta: '¿Los cambios de alcance se implementaron sin degradar la calidad?',
+    dimension: 'mantenibilidad',
+    pregunta: '¿Los cambios no degradaron la calidad?',
     formula: 'IMSD = (USM − USMD) ÷ USM × 100',
     variables: ['USM', 'USMD'],
     calcular: (s) => (s.USM > 0 ? ((s.USM - s.USMD) / s.USM) * 100 : null),
@@ -108,11 +128,11 @@ function relacionVelocidadCalidad(velocidad, calidad) {
 }
 
 const EXPLICACION_RELACION = {
-  'Concordancia alta': 'Velocidad alta y calidad alta: la velocidad refleja bien el desempeño.',
-  'Concordancia adecuada': 'Velocidad alta con calidad adecuada.',
-  'Desajuste de calidad': 'Velocidad alta pero calidad en atención o baja: la velocidad oculta problemas.',
-  'Calidad sostenida': 'Velocidad promedio o baja, pero la calidad se mantuvo alta o adecuada.',
-  'Desempeño en alerta': 'Velocidad promedio o baja y calidad en atención o baja.',
+  'Concordancia alta': 'Rápido y con calidad alta.',
+  'Concordancia adecuada': 'Rápido, con calidad aceptable.',
+  'Desajuste de calidad': 'Rápido, pero la calidad no acompaña.',
+  'Calidad sostenida': 'Sin acelerar, la calidad se mantuvo.',
+  'Desempeño en alerta': 'Sin acelerar y con la calidad en riesgo.',
 };
 
 // Completa SPTH de cada sprint: si no viene explícito, usa los 5 SPT previos
@@ -163,9 +183,9 @@ function resumir(evaluados) {
 }
 
 const EXPLICACION_VEREDICTO = {
-  Adecuado: 'La velocidad es una medida suficiente: cuando sube, la calidad acompaña.',
-  'En atención': 'La velocidad es solo una referencia parcial: hay que mirarla junto con los indicadores de calidad.',
-  'No adecuado': 'La velocidad no alcanza para evaluar el sprint: no refleja su calidad. Hay que decidir con los 4 indicadores.',
+  Adecuado: 'Sí: cuando la velocidad sube, la calidad acompaña.',
+  'En atención': 'En parte: la velocidad sola puede engañar.',
+  'No adecuado': 'No: la velocidad no refleja la calidad del sprint.',
 };
 
 function validarSprint(s) {

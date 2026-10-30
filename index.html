@@ -4,114 +4,174 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Calidad del Sprint</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" />
   <link rel="stylesheet" href="css/styles.css" />
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js" defer></script>
   <script src="js/modelo.js" defer></script>
   <script src="js/dashboard.js" defer></script>
-  <script src="js/precargados.js" defer></script>
   <script src="js/carga.js" defer></script>
   <script src="js/app.js" defer></script>
 </head>
-<body>
-  <header class="header">
-    <div class="header-texto">
-      <h1>Calidad del Sprint más allá de la velocidad</h1>
-      <p>Modelo de calidad · Adecuación funcional y Mantenibilidad · Grupo G – Big Brain</p>
-    </div>
-    <nav class="tabs" role="tablist">
-      <button class="tab" role="tab" data-tab="precargados">Datos precargados</button>
-      <button class="tab" role="tab" data-tab="carga">Carga manual</button>
-    </nav>
-  </header>
-
-  <main>
-    <section id="panel-precargados" class="panel" role="tabpanel" hidden>
-      <p class="contexto">Fuente: <code>data/sprints.json</code> <span id="equipo-precargados"></span></p>
-      <div id="dashboard-precargados" class="dashboard"></div>
-    </section>
-
-    <section id="panel-carga" class="panel" role="tabpanel" hidden>
-      <form id="form-sprint" class="card form" novalidate>
-        <h2>Cargar métricas directas de un sprint</h2>
-        <p class="ayuda">Cargá los sprints en orden cronológico. Cada sprint nuevo se suma a los ya cargados.</p>
-        <label class="campo nombre">
-          <span><b>Sprint</b> <small>Nombre o número del sprint evaluado</small></span>
-          <input name="sprint" required />
-        </label>
-        <div class="grupos"></div>
-        <ul id="errores-form" class="error" hidden></ul>
-        <div class="acciones">
-          <button type="submit">Agregar sprint</button>
+<body data-vista="resumen">
+  <div class="app">
+    <aside class="sidebar">
+      <div class="marca">
+        <div class="logo" aria-hidden="true">G</div>
+        <div>
+          <p class="marca-titulo">Calidad del Sprint</p>
+          <p class="marca-sub">Más allá de la velocidad</p>
         </div>
-      </form>
+      </div>
 
-      <div id="cargados" class="card" hidden>
-        <div class="card-header">
-          <h2>Sprints cargados</h2>
-          <div class="acciones">
-            <button id="limpiar" type="button" class="peligro">Borrar todo</button>
+      <div class="bloque">
+        <p class="sidebar-titulo">Datos</p>
+        <div class="fuente">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><ellipse cx="12" cy="5" rx="9" ry="3" /><path d="M3 5v14a9 3 0 0 0 18 0V5" /><path d="M3 12a9 3 0 0 0 18 0" /></svg>
+          <span id="fuente-carga"></span>
+        </div>
+      </div>
+
+      <nav class="bloque nav" aria-label="Secciones">
+        <p class="sidebar-titulo">Secciones</p>
+        <button class="nav-item" data-vista="cargar">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10" /><path d="M12 8v8M8 12h8" /></svg>
+          Cargar sprint
+        </button>
+        <button class="nav-item" data-vista="resumen">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="7" height="9" rx="1.5" /><rect x="14" y="3" width="7" height="5" rx="1.5" /><rect x="14" y="12" width="7" height="9" rx="1.5" /><rect x="3" y="16" width="7" height="5" rx="1.5" /></svg>
+          Resumen
+        </button>
+        <button class="nav-item" data-vista="sprints">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2" /><path d="M3 9h18M3 15h18M9 3v18" /></svg>
+          Sprints
+        </button>
+        <button class="nav-item" data-vista="detalle">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10" /><circle cx="12" cy="12" r="6" /><circle cx="12" cy="12" r="2" /></svg>
+          Detalle del sprint
+        </button>
+        <button class="nav-item" data-vista="glosario">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 4h6a4 4 0 0 1 4 4v13a3 3 0 0 0-3-3H2z" /><path d="M22 4h-6a4 4 0 0 0-4 4v13a3 3 0 0 1 3-3h7z" /></svg>
+          Glosario y reglas
+        </button>
+      </nav>
+
+      <footer class="sidebar-pie">
+        Aspectos Avanzados de Calidad de Software<br />
+        UTN FRRe · Grupo G – Big Brain · 2026
+      </footer>
+    </aside>
+
+    <main class="contenido">
+      <header class="topbar">
+        <h1 id="topbar-titulo"></h1>
+        <p class="topbar-sub" id="topbar-sub"></p>
+      </header>
+
+      <section id="panel-carga" class="panel">
+        <div class="vista vista-cargar">
+          <form id="form-sprint" class="card form" novalidate>
+            <div class="form-cabecera">
+              <label class="campo nombre">
+                <span class="campo-label">Nombre del sprint</span>
+                <input name="sprint" required />
+              </label>
+              <button type="submit" class="boton-primario">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14" /></svg>
+                Agregar sprint
+              </button>
+            </div>
+            <div class="grupos"></div>
+            <ul id="errores-form" class="alerta-error" hidden></ul>
+          </form>
+
+          <article id="cargados" class="card" hidden>
+            <header class="card-header">
+              <div>
+                <h2>Sprints cargados</h2>
+                <p class="sub">Guardados solo en este navegador</p>
+              </div>
+              <div class="acciones">
+                <button id="restaurar" type="button" class="boton-secundario">Restaurar datos base</button>
+                <button id="limpiar" type="button" class="boton-peligro">Borrar todo</button>
+              </div>
+            </header>
+            <div class="tabla-scroll">
+              <table id="tabla-cargados" class="tabla tabla-datos">
+                <thead><tr></tr></thead>
+                <tbody></tbody>
+              </table>
+            </div>
+          </article>
+        </div>
+
+        <div id="dashboard-carga" class="dashboard"></div>
+      </section>
+    </main>
+  </div>
+
+  <template id="tpl-dashboard">
+    <div class="vista vista-resumen">
+      <div class="grilla-resumen">
+        <article class="card hero">
+          <p class="eyebrow">Necesidad de información</p>
+          <h2>¿La velocidad alcanza para medir la calidad del sprint?</h2>
+          <div class="hero-cuerpo">
+            <div class="anillo"></div>
+            <div class="hero-texto">
+              <div class="veredicto"></div>
+              <p class="veredicto-texto"></p>
+              <p class="hero-detalle"></p>
+            </div>
           </div>
-        </div>
-        <p class="ayuda">Los datos quedan guardados solo en este navegador.</p>
+          <div class="escala-veredicto">
+            <span class="critico">&lt; 50 % No adecuado</span>
+            <span class="alerta">50–75 % En atención</span>
+            <span class="ok">&gt; 75 % Adecuado</span>
+          </div>
+        </article>
+
+        <article class="card distribucion">
+          <header class="card-header">
+            <div>
+              <h2>¿Cómo se comportaron los sprints?</h2>
+              <p class="sub">Relación entre velocidad y calidad</p>
+            </div>
+          </header>
+          <div class="tiles"></div>
+        </article>
+      </div>
+
+      <article class="card evolucion">
+        <header class="card-header">
+          <div>
+            <h2>Velocidad y calidad por sprint</h2>
+            <p class="sub">Tocá una barra para ver el detalle del sprint</p>
+          </div>
+          <div class="leyenda"></div>
+        </header>
+        <div class="grafico"><canvas aria-label="Story points terminados por sprint, coloreados por calidad"></canvas></div>
+      </article>
+    </div>
+
+    <div class="vista vista-sprints">
+      <article class="card">
         <div class="tabla-scroll">
-          <table id="tabla-cargados" class="tabla-datos">
-            <thead><tr></tr></thead>
+          <table class="tabla tabla-sprints">
+            <thead></thead>
             <tbody></tbody>
           </table>
         </div>
-      </div>
+      </article>
+    </div>
 
-      <div id="dashboard-carga" class="dashboard"></div>
-    </section>
-  </main>
-
-  <template id="tpl-dashboard">
-    <section class="card respuesta">
-      <p class="pregunta">¿La velocidad alcanza para medir la calidad del sprint?</p>
-      <div class="respuesta-cuerpo">
-        <div class="hero">
-          <span class="hero-valor"></span>
-          <span class="hero-detalle"></span>
-        </div>
-        <div class="respuesta-veredicto">
-          <div class="veredicto grande"></div>
-          <p class="veredicto-texto"></p>
-        </div>
-      </div>
-      <p class="nota">Concordancia alta = velocidad alta <b>y</b> calidad alta en el mismo sprint.
-        Adecuado: más del 75 % · En atención: entre 50 % y 75 % · No adecuado: menos del 50 %.</p>
-    </section>
-
-    <section class="card">
-      <h2>Velocidad y calidad por sprint</h2>
-      <p class="ayuda">Cada barra son los story points terminados (SPT) del sprint, coloreada según su calidad. La línea punteada es la velocidad promedio de los 5 sprints anteriores (VPH).</p>
-      <div class="leyenda"></div>
-      <div class="grafico"><canvas aria-label="Story points terminados por sprint, coloreados por calidad"></canvas></div>
-    </section>
-
-    <section class="card">
-      <h2>Resumen por sprint</h2>
-      <p class="ayuda">Tocá un sprint para ver su detalle.</p>
-      <div class="tabla-scroll">
-        <table class="tabla-sprints">
-          <thead><tr><th>Sprint</th><th>Velocidad</th><th>Calidad</th><th>Relación velocidad–calidad</th></tr></thead>
-          <tbody></tbody>
-        </table>
-      </div>
-    </section>
-
-    <section class="detalle-wrap">
-      <div class="detalle-header">
-        <h2>Detalle del sprint</h2>
-        <select class="selector-sprint" aria-label="Sprint a detallar"></select>
-      </div>
+    <div class="vista vista-detalle">
+      <div class="pills-sprints" role="tablist" aria-label="Sprint"></div>
       <div class="detalle"></div>
-    </section>
+    </div>
 
-    <details class="card glosario">
-      <summary>Glosario de variables</summary>
-      <dl></dl>
-    </details>
+    <div class="vista vista-glosario"></div>
   </template>
 </body>
 </html>
