@@ -9,7 +9,6 @@
   <script src="js/modelo.js" defer></script>
   <script src="js/dashboard.js" defer></script>
   <script src="js/precargados.js" defer></script>
-  <script src="js/excel.js" defer></script>
   <script src="js/carga.js" defer></script>
   <script src="js/app.js" defer></script>
 </head>
@@ -32,22 +31,9 @@
     </section>
 
     <section id="panel-carga" class="panel" role="tabpanel" hidden>
-      <div class="card">
-        <div class="card-header">
-          <div>
-            <h2>1. Base de datos desde Excel</h2>
-            <p class="ayuda">Importá el Excel con los sprints iniciales: una fila por sprint, en orden cronológico. Después podés agregar más sprints con el formulario de abajo.</p>
-          </div>
-          <div class="acciones">
-            <label class="boton">Importar Excel <input id="importar" type="file" accept=".xlsx,.xls,.csv" hidden /></label>
-            <button id="plantilla" type="button" class="secundario">Descargar plantilla</button>
-          </div>
-        </div>
-        <div id="estado-excel" class="ayuda" role="status"></div>
-      </div>
-
       <form id="form-sprint" class="card form" novalidate>
-        <h2>2. Agregar un sprint (métricas directas)</h2>
+        <h2>Cargar métricas directas de un sprint</h2>
+        <p class="ayuda">Cargá los sprints en orden cronológico. Cada sprint nuevo se suma a los ya cargados.</p>
         <label class="campo nombre">
           <span><b>Sprint</b> <small>Nombre o número del sprint evaluado</small></span>
           <input name="sprint" required />
@@ -63,11 +49,10 @@
         <div class="card-header">
           <h2>Sprints cargados</h2>
           <div class="acciones">
-            <button id="exportar" type="button" class="secundario">Exportar Excel</button>
             <button id="limpiar" type="button" class="peligro">Borrar todo</button>
           </div>
         </div>
-        <p class="ayuda">Los datos quedan guardados solo en este navegador. Exportalos a Excel para no perderlos: el archivo exportado se puede volver a importar.</p>
+        <p class="ayuda">Los datos quedan guardados solo en este navegador.</p>
         <div class="tabla-scroll">
           <table id="tabla-cargados" class="tabla-datos">
             <thead><tr></tr></thead>

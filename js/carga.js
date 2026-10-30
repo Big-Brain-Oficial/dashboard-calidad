@@ -1,4 +1,4 @@
-// Pestaña 2: sprints importados desde Excel y/o cargados a mano, guardados en el localStorage del navegador
+// Pestaña 2: carga manual de sprints, guardados en el localStorage del navegador
 const STORAGE_KEY = 'dashboard-calidad:sprints';
 
 const GRUPOS_FORM = [
@@ -112,44 +112,6 @@ function iniciarCarga() {
     form.reset();
     sugerirSiguiente(form, sprints);
     renderCarga();
-  });
-
-  document.getElementById('exportar').addEventListener('click', () =>
-    descargarExcel(leerSprints(), 'sprints.xlsx').catch((err) => alert(err.message)));
-
-  document.getElementById('plantilla').addEventListener('click', () =>
-    descargarExcel([], 'plantilla-sprints.xlsx').catch((err) => alert(err.message)));
-
-  document.getElementById('importar').addEventListener('change', async (e) => {
-    const archivo = e.target.files[0];
-    e.target.value = '';
-    if (!archivo) return;
-    const estado = document.getElementById('estado-excel');
-    estado.className = 'ayuda';
-    estado.textContent = 'Leyendo el archivo…';
-    try {
-      const { sprints, errores } = await leerExcel(archivo);
-      if (errores.length) {
-        estado.className = 'error';
-        estado.innerHTML = `<b>No se importó: el archivo tiene errores.</b><ul>${errores
-          .map((err) => `<li>${esc(err)}</li>`)
-          .join('')}</ul>`;
-        return;
-      }
-      const actuales = leerSprints().length;
-      if (actuales && !confirm(`Ya hay ${actuales} sprints cargados. ¿Reemplazarlos por los ${sprints.length} del Excel?`)) {
-        estado.textContent = '';
-        return;
-      }
-      guardarSprints(sprints);
-      sugerirSiguiente(form, sprints);
-      renderCarga();
-      estado.textContent = `Se importaron ${sprints.length} sprints desde "${archivo.name}". Los que cargues ahora se agregan a continuación.`;
-    } catch (err) {
-      estado.className = 'error';
-      estado.textContent = `No se pudo leer el archivo: ${err.message}`;
-      console.error(err);
-    }
   });
 
   document.getElementById('limpiar').addEventListener('click', () => {
