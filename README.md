@@ -4,17 +4,21 @@
 
 Dashboard estático (HTML + JS + [Chart.js](https://www.chartjs.org/)), desplegado en Vercel. Implementa el modelo de calidad del **Escenario G: Calidad del Sprint más allá de la velocidad** y responde a la necesidad de información: *¿en qué grado la velocidad es una medida suficiente para determinar la calidad del desempeño del sprint?*
 
-## Qué muestra
+## Cómo está organizado
 
-1. **Respuesta principal**: el porcentaje de sprints con *concordancia alta* (velocidad alta y calidad alta al mismo tiempo) y el veredicto. Es *Adecuado* por encima del 75 %, *En atención* entre el 50 % y el 75 %, y *No adecuado* por debajo del 50 %.
-2. **Velocidad y calidad por sprint**: un gráfico de story points terminados (SPT), con cada barra coloreada según la calidad del sprint, y una línea con el promedio histórico (VPH).
-3. **Resumen por sprint**: la velocidad, la calidad y la relación velocidad–calidad de cada sprint.
-4. **Detalle del sprint**: los 4 indicadores (GCF, ICF, EDD e IMSD), cada uno con su fórmula y el significado de cada variable.
+La barra lateral tiene dos partes:
 
-## Pestañas
+- **Datos**: elige de dónde salen los sprints.
+  - **Precargados**: los datos de ejemplo de [`data/sprints.json`](data/sprints.json). Esta fuente es fija.
+  - **Carga manual**: arranca con una base de 6 sprints ([`data/carga-base.json`](data/carga-base.json), extraída de las métricas directas de `Dataset_Historias_Calidad_6_Sprints.xlsx`), y los sprints que se ingresan con el formulario se suman a continuación. Se guardan en el `localStorage` del navegador: cada navegador tiene los suyos y no se comparten entre usuarios. Con *Restaurar datos base* se vuelve a los 6 sprints originales.
+- **Secciones**: muestran una parte del dashboard por vez.
+  - **Cargar sprint** (solo en carga manual): un formulario con las métricas directas, agrupadas por dimensión. Los SPTH se completan solos con los sprints ya cargados.
+  - **Resumen**: el porcentaje de sprints con *concordancia alta* y el veredicto, la cantidad de sprints en cada relación velocidad–calidad y un gráfico de velocidad coloreado por calidad.
+  - **Sprints**: una tabla con los 4 indicadores de cada sprint, cada celda coloreada según su nivel.
+  - **Detalle del sprint**: la relación velocidad–calidad, la calidad y la velocidad de un sprint, y los indicadores agrupados por dimensión (Adecuación funcional y Mantenibilidad), cada uno con su medidor de umbrales.
+  - **Glosario y reglas**: en tres partes (variables por dimensión, indicadores con sus umbrales y reglas de decisión).
 
-- **Datos precargados** (fija): muestra los datos de ejemplo de [`data/sprints.json`](data/sprints.json).
-- **Carga manual** (flexible): un formulario para cargar las métricas directas de cada sprint, en orden cronológico. Cada sprint nuevo se suma a los ya cargados, y se pueden eliminar sprints o borrar todo. Los datos se guardan en el `localStorage` del navegador: cada navegador tiene los suyos y no se comparten entre usuarios.
+El significado de cada variable también aparece al pasar el mouse por encima (o al tocarla en el celular).
 
 ## Métricas directas que se cargan
 
@@ -53,7 +57,7 @@ La configuración está en [`vercel.json`](vercel.json):
 
 - Es un sitio estático: no hay framework, no se instalan dependencias y no hay build. Se publica la raíz del repo.
 - `cleanUrls`: las URLs se sirven sin la extensión `.html`.
-- Headers de seguridad: CSP (solo permite scripts propios y de `cdn.jsdelivr.net`, para Chart.js), `X-Frame-Options`, `nosniff`, `Referrer-Policy` y `Permissions-Policy`.
+- Headers de seguridad: CSP (solo permite scripts propios y de `cdn.jsdelivr.net`, para Chart.js, y la fuente Plus Jakarta Sans de Google Fonts), `X-Frame-Options`, `nosniff`, `Referrer-Policy` y `Permissions-Policy`.
 - Los archivos de `data/` siempre se revalidan, así un cambio en los datos se ve apenas se deploya.
 
 `.vercelignore` deja afuera los archivos que no hacen falta en producción.

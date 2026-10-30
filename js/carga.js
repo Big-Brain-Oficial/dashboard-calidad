@@ -1,12 +1,9 @@
-// Pestaña 2: carga manual de sprints, guardados en el localStorage del navegador
+// Fuente "carga manual": sprints guardados en el localStorage del navegador.
+// La primera vez se inicializa con la base de data/carga-base.json (6 sprints del dataset del equipo).
 const STORAGE_KEY = 'dashboard-calidad:sprints';
+const URL_BASE = 'data/carga-base.json';
 
-const GRUPOS_FORM = [
-  { titulo: 'Completitud funcional', campos: ['USE', 'USAC'] },
-  { titulo: 'Corrección funcional', campos: ['USVF', 'USCAF'] },
-  { titulo: 'Analizabilidad', campos: ['DEFE', 'DEFT'] },
-  { titulo: 'Modificabilidad', campos: ['USM', 'USMD'] },
-];
+const GRUPOS_FORM = GRUPOS_VARIABLES.filter((g) => g.clave !== 'velocidad');
 const CAMPOS_SPTH = ['SPTH1', 'SPTH2', 'SPTH3', 'SPTH4', 'SPTH5'];
 
 function leerSprints() {
@@ -18,6 +15,12 @@ function leerSprints() {
   }
 }
 
+async function leerBase() {
+  const resp = await fetch(URL_BASE, { cache: 'no-cache' });
+  if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+  return (await resp.json()).sprints;
+}
+
 function guardarSprints(sprints) {
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(sprints));
@@ -27,24 +30,31 @@ function guardarSprints(sprints) {
 }
 
 function construirFormulario(form) {
-  const campo = (nombre, ayuda, extra = '') => `
+  const campo = (nombre, etiqueta, extra = '') => `
     <label class="campo">
-      <span><b>${nombre}</b> <small>${ayuda}</small></span>
-      <input name="${nombre}" type="number" min="0" required ${extra} />
+      <span class="campo-cabeza"><span class="codigo">${nombre}</span>${info(VARIABLES[nombre])}</span>
+      <span class="campo-nombre">${etiqueta}</span>
+      <input name="${nombre}" type="number" min="0" inputmode="decimal" required ${extra} />
     </label>`;
 
-  form.querySelector('.grupos').innerHTML =
-    GRUPOS_FORM.map(({ titulo, campos }) => `
-      <fieldset>
-        <legend>${titulo}</legend>
-        ${campos.map((c) => campo(c, VARIABLES[c], 'step="1"')).join('')}
-      </fieldset>`).join('') +
-    `<fieldset class="spth">
-      <legend>Velocidad</legend>
-      <div class="fila-spth">${campo('SPT', VARIABLES.SPT, 'step="any"')}</div>
-      <p class="ayuda"><b>SPTH</b>: ${VARIABLES.SPTH}. Se completan solos con los sprints que ya cargaste.</p>
-      <div class="fila-spth">${CAMPOS_SPTH.map((c, i) => campo(c, `Sprint −${5 - i}`, 'step="any"')).join('')}</div>
+  const grupo = (clave, titulo, icono, contenido) => `
+    <fieldset class="grupo dim-${clave}">
+      <legend><span class="dim-icono">${icono}</span>${titulo}</legend>
+      ${contenido}
     </fieldset>`;
+
+  form.querySelector('.grupos').innerHTML =
+    GRUPOS_FORM.map(({ clave, nombre, icono, variables }) =>
+      grupo(clave, nombre, icono, `<div class="campos">${variables.map((c) => campo(c, ETIQUETAS[c], 'step="1"')).join('')}</div>`),
+    ).join('') +
+    grupo('velocidad', 'Velocidad', '↗', `
+      <div class="campos">${campo('SPT', ETIQUETAS.SPT, 'step="any"')}</div>
+      <p class="campo-label subtitulo">Story points de los 5 sprints anteriores ${info(`${VARIABLES.SPTH}. Se completan solos con los sprints ya cargados.`)}</p>
+      <div class="campos campos-spth">${CAMPOS_SPTH.map((c, i) => `
+        <label class="campo">
+          <span class="campo-label"><span class="codigo">−${5 - i}</span></span>
+          <input name="${c}" type="number" min="0" inputmode="decimal" step="any" required aria-label="Story points del sprint −${5 - i}" />
+        </label>`).join('')}</div>`);
 }
 
 function leerFormulario(form) {
@@ -74,11 +84,13 @@ function renderCarga() {
   tbody.innerHTML = '';
   sprints.forEach((s, i) => {
     const fila = document.createElement('tr');
-    fila.innerHTML = `<td>${esc(s.sprint)}</td>${CAMPOS_DIRECTOS.map((c) => `<td>${esc(s[c])}</td>`).join('')}<td></td>`;
+    fila.innerHTML = `<td><b>${esc(s.sprint)}</b></td>${CAMPOS_DIRECTOS.map((c) => `<td class="num">${esc(s[c])}</td>`).join('')}<td></td>`;
     const borrar = document.createElement('button');
     borrar.type = 'button';
-    borrar.className = 'link-peligro';
-    borrar.textContent = 'Eliminar';
+    borrar.className = 'boton-icono';
+    borrar.textContent = '✕';
+    borrar.setAttribute('aria-label', `Eliminar ${s.sprint}`);
+    borrar.title = 'Eliminar';
     borrar.addEventListener('click', () => {
       sprints.splice(i, 1);
       guardarSprints(sprints);
@@ -88,15 +100,18 @@ function renderCarga() {
     tbody.appendChild(fila);
   });
   document.getElementById('cargados').hidden = !sprints.length;
+  document.getElementById('fuente-carga').textContent =
+    sprints.length === 1 ? '1 sprint cargado' : `${sprints.length} sprints cargados`;
   renderDashboard(document.getElementById('dashboard-carga'), { sprints });
 }
 
-function iniciarCarga() {
+async function iniciarCarga() {
   const form = document.getElementById('form-sprint');
   const errores = document.getElementById('errores-form');
+  const boton = form.querySelector('[type="submit"]');
   construirFormulario(form);
   document.querySelector('#tabla-cargados thead tr').innerHTML =
-    `<th>Sprint</th>${CAMPOS_DIRECTOS.map((c) => `<th title="${VARIABLES[c]}">${c}</th>`).join('')}<th></th>`;
+    `<th>Sprint</th>${CAMPOS_DIRECTOS.map((c) => `<th class="num"${tip(VARIABLES[c])}>${c}</th>`).join('')}<th></th>`;
 
   form.addEventListener('submit', (e) => {
     e.preventDefault();
@@ -112,6 +127,8 @@ function iniciarCarga() {
     form.reset();
     sugerirSiguiente(form, sprints);
     renderCarga();
+    boton.classList.add('exito');
+    setTimeout(() => boton.classList.remove('exito'), 1200);
   });
 
   document.getElementById('limpiar').addEventListener('click', () => {
@@ -121,6 +138,28 @@ function iniciarCarga() {
       renderCarga();
     }
   });
+
+  document.getElementById('restaurar').addEventListener('click', async () => {
+    if (!confirm('¿Reemplazar los sprints cargados por los 6 sprints de la base?')) return;
+    try {
+      const base = await leerBase();
+      guardarSprints(base);
+      sugerirSiguiente(form, base);
+      renderCarga();
+    } catch (err) {
+      alert('No se pudo leer la base de datos.');
+      console.error(err);
+    }
+  });
+
+  // Primera visita en este navegador: se arranca con la base
+  if (localStorage.getItem(STORAGE_KEY) === null) {
+    try {
+      guardarSprints(await leerBase());
+    } catch (err) {
+      console.error('No se pudo cargar la base', err);
+    }
+  }
 
   sugerirSiguiente(form, leerSprints());
   renderCarga();

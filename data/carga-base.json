@@ -1,0 +1,84 @@
+{
+  "fuente": "Dataset_Historias_Calidad_6_Sprints.xlsx",
+  "equipo": "Lista de compras (dataset simulado)",
+  "sprints": [
+    {
+      "sprint": "Sprint 1",
+      "USE": 5,
+      "USAC": 5,
+      "USVF": 5,
+      "USCAF": 5,
+      "DEFE": 6,
+      "DEFT": 3,
+      "USM": 2,
+      "USMD": 1,
+      "SPT": 12,
+      "SPTH": [6, 6, 6, 6, 6]
+    },
+    {
+      "sprint": "Sprint 2",
+      "USE": 5,
+      "USAC": 5,
+      "USVF": 5,
+      "USCAF": 5,
+      "DEFE": 2,
+      "DEFT": 2,
+      "USM": 2,
+      "USMD": 0,
+      "SPT": 8,
+      "SPTH": [6, 6, 6, 6, 12]
+    },
+    {
+      "sprint": "Sprint 3",
+      "USE": 5,
+      "USAC": 3,
+      "USVF": 4,
+      "USCAF": 3,
+      "DEFE": 4,
+      "DEFT": 3,
+      "USM": 3,
+      "USMD": 1,
+      "SPT": 9,
+      "SPTH": [6, 6, 6, 12, 8]
+    },
+    {
+      "sprint": "Sprint 4",
+      "USE": 5,
+      "USAC": 5,
+      "USVF": 5,
+      "USCAF": 5,
+      "DEFE": 5,
+      "DEFT": 4,
+      "USM": 2,
+      "USMD": 0,
+      "SPT": 13,
+      "SPTH": [6, 6, 12, 8, 9]
+    },
+    {
+      "sprint": "Sprint 5",
+      "USE": 5,
+      "USAC": 5,
+      "USVF": 5,
+      "USCAF": 5,
+      "DEFE": 2,
+      "DEFT": 2,
+      "USM": 2,
+      "USMD": 0,
+      "SPT": 5,
+      "SPTH": [6, 12, 8, 9, 13]
+    },
+    {
+      "sprint": "Sprint 6",
+      "USE": 5,
+      "USAC": 5,
+      "USVF": 5,
+      "USCAF": 5,
+      "DEFE": 3,
+      "DEFT": 3,
+      "USM": 2,
+      "USMD": 0,
+      "SPT": 12,
+      "SPTH": [12, 8, 9, 13, 5]
+    }
+  ]
+}
